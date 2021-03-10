@@ -1,6 +1,5 @@
-# Angular 入门
+# Angular Notes
 
-> 更新日期：{docsify-updated}
 
 ## 本地预览
 
