@@ -1,0 +1,178 @@
+:root {
+	--color_base: #191919;
+	--color_pen: #fff;
+
+
+	--size: 20vmin;
+	--fog: calc(var(--size) / 1.2);
+	--scale: 4.8;
+}
+@mixin size($w, $h: $w) {
+	width: $w;
+	height: $h;
+}
+
+
+.p-flex {
+	display: flex;
+}
+
+.p-circle {
+	border-radius: 50%;
+}
+
+
+body {
+	height: 100vh;
+	background-color: var(--color_base);
+	margin: 0;
+	overflow: hidden;
+}
+
+::selection {
+	background-color: transparent;
+}
+
+.halloctober {
+	@include size(100%);
+
+	&__banner {
+		margin: auto;
+		padding: 3%;
+		position: relative;
+		overflow: hidden;
+	}
+}
+
+
+.typo {
+	color: var(--color_pen);
+	cursor: default;
+	font-family: 'Fredoka One', sans-serif;
+	font-size: var(--size);
+	font-weight: normal;
+	letter-spacing: 0.1rem;
+	margin: auto;
+	outline: none;
+	position: relative;
+
+	&:hover {
+		+ .fog {
+			animation-play-state: paused;
+		}
+	}
+
+	$red: #b30808;
+	$blue: #1A237E;
+	$anim: 2s ease-in-out infinite;
+
+
+	&::before,
+	&::after {
+		color: transparent;
+		content: 'Spooky';
+		position: absolute;
+		top: 0;
+		left: 0;
+		z-index: -10;
+	}
+
+
+	&::before {
+		animation: move_upper_shadow $anim;
+		opacity: 0;
+		text-shadow:
+			6px 0 2px rgba($red, 0.4),
+			12px 0 2px rgba($blue, 0.3);
+	}
+
+
+	&::after {
+		animation: move_bottom_shadow $anim;
+		text-shadow:
+			2px 4px 2px rgba($red, 0.4),
+			4px 8px 2px rgba($blue, 0.3);
+	}
+
+	transform: skew(10deg, 2deg);
+	animation: float $anim;
+	@at-root {
+		@keyframes move_upper_shadow {
+			0%, 90%, 100% {
+				opacity: 0;
+				transform: translateX(-2%);
+			}
+			30% {
+				opacity: 1;
+				transform: translateX(0);
+			}
+		}
+		@keyframes move_bottom_shadow {
+			0%, 90%, 100% {
+				opacity: 1;
+				transform: translate(0, 0);
+			}
+			30% {
+				opacity: 0;
+				transform: translateY(-3.5%);
+			}
+		}
+		@keyframes float {
+			50% {
+				transform: scaleY(1.01) skew(-10deg, -2deg);
+			}
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		animation: none;
+		transform: none;
+
+		&::before,
+		&::after {
+			animation: none;
+		}
+	}
+}
+
+.fog {
+	--fog_neg: calc(var(--fog) * -1);
+
+	@include size(var(--fog));
+	background-color: var(--color_base);
+	position: absolute;
+	top: var(--fog_neg);
+	left: var(--fog_neg);
+
+	transform: translate3d(0, 0, 0);
+	transform-origin: 0 50%;
+	animation: move_fog 13s 2s ease-in-out alternate infinite;
+	@at-root {
+		@keyframes move_fog {
+			50% {
+				transform: scale(var(--scale));
+			}
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		animation: none;
+	}
+
+
+	&::after {
+		--blur: calc(var(--fog) * 2);
+		--blur_neghalf: calc(var(--blur) / -2);
+		--filter: calc(var(--fog) / 30);
+
+		@extend .p-circle;
+
+		@include size(var(--blur));
+		content: '';
+		background-color: var(--color_base);
+		filter: blur(var(--filter));
+		margin-top: var(--blur_neghalf);
+		margin-left: var(--blur_neghalf);
+		position: absolute;
+		top: 50%;
+		left: 50%;
+	}
+}
